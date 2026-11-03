@@ -709,7 +709,7 @@ fn forwardingDir(b: *Build, deps: *const exe.DepPkgs, cmake: []const u8) LazyPat
     // ICU headers live in two source dirs; merge them into one unicode/ view.
     cwd.createDirPath(io, b.fmt("{s}/unicode", .{fwd})) catch @panic("mkdir webkit-fwd/unicode");
     const icu_abs = depRootAbs(b, deps.icu);
-    for ([_][]const u8{ "icu/source/common/unicode", "icu/source/i18n/unicode" }) |sub| {
+    for ([_][]const u8{ "source/common/unicode", "source/i18n/unicode" }) |sub| {
         const dir_abs = b.fmt("{s}/{s}", .{ icu_abs, sub });
         var dir = std.Io.Dir.openDirAbsolute(io, dir_abs, .{ .iterate = true }) catch std.debug.panic("open {s}", .{dir_abs});
         defer dir.close(io);
@@ -800,7 +800,7 @@ fn addTreeInputs(b: *Build, run: *Step.Run, root: []const u8) void {
     var dir = std.Io.Dir.openDirAbsolute(io, rootJoin(b, root), .{ .iterate = true }) catch std.debug.panic("open {s}", .{root});
     defer dir.close(io);
     var walker = dir.walk(b.graph.arena) catch @panic("OOM");
-    defer walker.deinit(io);
+    defer walker.deinit();
     while (walker.next(io) catch @panic("walk")) |entry| {
         if (entry.kind != .file) continue;
         if (std.mem.indexOf(u8, entry.path, "__pycache__") != null) continue;

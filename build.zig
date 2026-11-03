@@ -879,8 +879,8 @@ fn configureObj(opts: *BunBuildOptions, obj: *Compile) void {
     if (opts.os == .linux) {
         obj.link_emit_relocs = false;
         obj.link_eh_frame_hdr = false;
-        obj.function_sections = true;
-        obj.data_sections = true;
+        // obj.function_sections = true;
+        // obj.data_sections = true;
 
         if (opts.optimize == .debug and opts.enable_valgrind) {
             obj.root_module.valgrind = true;

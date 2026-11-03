@@ -51,14 +51,14 @@ pub fn addLibs(b: *Build, deps: *const exe.DepPkgs, optimize: std.builtin.Optimi
     const uc = newLib(b, "icuuc", library_optimize);
     const i18n = newLib(b, "icui18n", library_optimize);
     for ([_]*Step.Compile{ uc, i18n }) |lib| {
-        lib.root_module.addIncludePath(deps.icu.path("icu/source/common"));
+        lib.root_module.addIncludePath(deps.icu.path("source/common"));
     }
-    i18n.root_module.addIncludePath(deps.icu.path("icu/source/i18n"));
+    i18n.root_module.addIncludePath(deps.icu.path("source/i18n"));
 
-    for (listCpp(b, deps, "icu/source/common")) |f| {
+    for (listCpp(b, deps, "source/common")) |f| {
         uc.root_module.addCSourceFile(.{ .file = deps.icu.path(f), .flags = ucFlags(b), .language = .cpp });
     }
-    for (listCpp(b, deps, "icu/source/i18n")) |f| {
+    for (listCpp(b, deps, "source/i18n")) |f| {
         i18n.root_module.addCSourceFile(.{ .file = deps.icu.path(f), .flags = i18nFlags(b), .language = .cpp });
     }
 
@@ -99,14 +99,14 @@ pub fn addLibs(b: *Build, deps: *const exe.DepPkgs, optimize: std.builtin.Optimi
 /// contents, and strip the unreachable entries.
 fn filterData(b: *Build, deps: *const exe.DepPkgs, uc: *Step.Compile, i18n: *Step.Compile) LazyPath {
     const tool_lib = newLib(b, "icupkg-tool", .fast);
-    tool_lib.root_module.addIncludePath(deps.icu.path("icu/source/common"));
-    tool_lib.root_module.addIncludePath(deps.icu.path("icu/source/i18n"));
-    tool_lib.root_module.addIncludePath(deps.icu.path("icu/source/tools/toolutil"));
+    tool_lib.root_module.addIncludePath(deps.icu.path("source/common"));
+    tool_lib.root_module.addIncludePath(deps.icu.path("source/i18n"));
+    tool_lib.root_module.addIncludePath(deps.icu.path("source/tools/toolutil"));
     const tool_flags = libFlags(b, "-DU_TOOLUTIL_IMPLEMENTATION");
-    for (listCpp(b, deps, "icu/source/tools/toolutil")) |f| {
+    for (listCpp(b, deps, "source/tools/toolutil")) |f| {
         tool_lib.root_module.addCSourceFile(.{ .file = deps.icu.path(f), .flags = tool_flags, .language = .cpp });
     }
-    for ([_][]const u8{ "icu/source/tools/icupkg/icupkg.cpp", "icu/source/stubdata/stubdata.cpp" }) |f| {
+    for ([_][]const u8{ "source/tools/icupkg/icupkg.cpp", "source/stubdata/stubdata.cpp" }) |f| {
         tool_lib.root_module.addCSourceFile(.{ .file = deps.icu.path(f), .flags = tool_flags, .language = .cpp });
     }
 
@@ -119,7 +119,7 @@ fn filterData(b: *Build, deps: *const exe.DepPkgs, uc: *Step.Compile, i18n: *Ste
     link.addArg("-Wl,--end-group");
     link.step.name = "link icupkg";
 
-    const dat = deps.icu.path("icu/source/data/in/" ++ data_file_name);
+    const dat = deps.icu.path("source/data/in/" ++ data_file_name);
 
     const list = b.addSystemCommand(&.{
         "sh", "-c",

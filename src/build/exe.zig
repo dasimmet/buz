@@ -2153,7 +2153,7 @@ fn listFilesAny(b: *Build, dir: []const u8, suffixes: []const []const u8, recurs
     defer handle.close(io);
     if (recursive) {
         var walker = handle.walk(arena) catch @panic("OOM");
-        defer walker.deinit(io);
+        defer walker.deinit();
         while (walker.next(io) catch @panic("walk failed")) |entry| {
             if (entry.kind == .directory) {
                 b.dependOnDirectoryContents(b.path(b.fmt("{s}/{s}", .{ dir, entry.path })));
